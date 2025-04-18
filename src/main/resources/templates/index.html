@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TWind 博客</title>
+    <style>
+        body{
+            margin:0;
+            padding:0;
+            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            background:#f0f2f5;
+            color:#333;
+        }
+        .header{
+            background:linear-gradient(135deg,#6dd5ed,#2193b0);
+            padding:40px 20px;
+            text-align:center;
+            color:#fff;
+        }
+        .container{
+            max-width:800px;
+            margin:20px auto;
+            background:#fff;
+            padding:20px;
+            box-shadow:0 2px 5px rgba(0,0,0,.1);
+            border-radius:5px;
+        }
+        /* -------- 博客列表 -------- */
+        .blog-list{margin-top:20px}
+        .blog-item{
+            padding:10px;
+            border-bottom:1px solid #eee;
+        }
+        .blog-item:last-child{border-bottom:none}
+        .blog-item a{
+            text-decoration:none;
+            color:#2193b0;
+            font-weight:bold;
+        }
+        .blog-item a:hover{text-decoration:underline}
+
+        /* -------- 评论区 -------- */
+        .comment-list{margin-top:10px}
+        .comment-item{
+            padding:10px 0;
+            border-bottom:1px dashed #ddd;
+            line-height:1.6;
+        }
+        .comment-item:last-child{border-bottom:none}
+        .comment-item .meta{
+            font-size:.85em;
+            color:#555;
+            margin-bottom:4px;
+        }
+        /* -------- 发表评论表单 -------- */
+        .comment-form{
+            margin-top:20px;
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        }
+        .comment-form input,
+        .comment-form textarea{
+            padding:8px 10px;
+            border:1px solid #ccc;
+            border-radius:4px;
+            font-size:1em;
+            resize:vertical;
+            width:100%;
+            box-sizing:border-box;
+        }
+        .comment-form button{
+            align-self:flex-start;
+            padding:8px 20px;
+            border:none;
+            border-radius:4px;
+            background:#2193b0;
+            color:#fff;
+            cursor:pointer;
+            transition:opacity .2s;
+        }
+        .comment-form button:hover{opacity:.85}
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>欢迎来到 TWind 的博客</h1>
+    <p>I LOVE 5mm!!!</p>
+</div>
+
+<div class="container">
+    <h2>碎碎念</h2>
+    <div class="blog-list"><!-- 博客列表注入 --></div>
+
+    <h2 style="margin-top:40px">议事大厅</h2>
+    <div class="comment-list"><!-- 评论列表注入 --></div>
+
+    <h3>发表评论</h3>
+    <form id="commentForm" class="comment-form">
+        <input type="text" id="username" placeholder="昵称" maxlength="30" required />
+        <textarea id="content" placeholder="说点什么…" rows="4" maxlength="500" required></textarea>
+        <button type="submit">提交</button>
+    </form>
+</div>
+
+<script>
+    /* 简单 XSS 转义 */
+    const escapeHtml = str =>
+        str.replace(/[&<>"'`]/g, s=>({
+            '&':'&amp;','<':'&lt;','>':'&gt;',
+            '"':'&quot;',"'":'&#39;','`':'&#x60;'
+        }[s]));
+
+    /* ---------- 拉取博客列表 ---------- */
+    function loadBlogs(){
+        fetch('/api/getBlogsList')
+            .then(res=>{
+                if(!res.ok) throw new Error('网络错误：'+res.status);
+                return res.json();
+            })
+            .then(list=>{
+                const container=document.querySelector('.blog-list');
+                container.innerHTML='';
+                list.forEach(filename=>{
+                    const name=filename.replace(/\.[^/.]+$/,'');
+                    const item=document.createElement('div');
+                    item.className='blog-item';
+                    item.innerHTML=`<a href="blog/${filename}">${escapeHtml(name)}</a>`;
+                    container.appendChild(item);
+                });
+            })
+            .catch(err=>{
+                console.error(err);
+                document.querySelector('.blog-list').innerHTML=
+                    '<p>加载博客列表失败，请稍后重试。</p>';
+            });
+    }
+
+    /* ---------- 拉取评论 ---------- */
+    function loadComments () {
+        fetch('/api/getComment')
+            .then(res => {
+                if (!res.ok) throw new Error('网络错误：' + res.status);
+                return res.json();
+            })
+            /* ① 这里把 data.comments 取出来 -------------------------------- */
+            .then(data => {
+                const list = Array.isArray(data) ? data         // 兼容返回纯数组
+                    : Array.isArray(data.comments) ? data.comments : [];
+                /* -------------------------------------------------------------- */
+                const ctn = document.querySelector('.comment-list');
+                ctn.innerHTML = list.length
+                    ? ''
+                    : '<p style="color:#777">暂无评论，快来抢沙发吧！</p>';
+                list.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = 'comment-item';
+                    div.innerHTML = `
+          <div class="meta"><strong>${escapeHtml(c.username)}</strong> ·
+            <span>${new Date(c.time).toLocaleString()}</span>
+          </div>
+          <div>${escapeHtml(c.content)}</div>`;
+                    ctn.appendChild(div);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                document.querySelector('.comment-list').innerHTML =
+                    '<p>加载评论失败，请稍后重试。</p>';
+            });
+    }
+
+    /* ---------- 提交评论 ---------- */
+    document.getElementById('commentForm').addEventListener('submit',e=>{
+        e.preventDefault();
+        const username=document.getElementById('username').value.trim();
+        const content=document.getElementById('content').value.trim();
+        if(!username||!content) return;
+
+        fetch('/api/addComment',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({username,content})
+        })
+            .then(res=>{
+                if(!res.ok) throw new Error('提交失败：'+res.status);
+                /* 清空表单并刷新评论 */
+                document.getElementById('content').value='';
+                loadComments();
+            })
+            .catch(err=>{
+                console.error(err);
+                alert('提交失败，请稍后再试');
+            });
+    });
+
+    /* 初始化 */
+    document.addEventListener('DOMContentLoaded',()=>{
+        loadBlogs();
+        loadComments();
+    });
+</script>
+</body>
+</html>

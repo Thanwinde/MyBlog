@@ -10,3 +10,13 @@ spring:
     mode: HTML5                     # 要运用于模板之上的模板模式。（默认值： HTML5）
     prefix: classpath:/templates/   # 在构建 URL 时添加到视图名称前的前缀（默认值： classpath:/templates/）
     suffix: .html                   # 在构建 URL 时添加到视图名称后的后缀（默认值： .html ）
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/myblog?useSSL=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: 123456
+htmls:
+  blogs: "E:/IT/MyBlogs/blogs/"
+  modules: "E:/IT/MyBlogs/modules/"
+
+
