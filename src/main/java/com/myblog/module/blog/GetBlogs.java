@@ -1,6 +1,9 @@
 package com.myblog.module.blog;
 
+import cn.hutool.json.JSONArray;
 import com.myblog.config.PathConfig;
+import com.myblog.module.blog.entity.Blog;
+import com.myblog.module.comment.entity.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,26 +32,34 @@ public class GetBlogs {
     final PathConfig pathConfig;
 
     @GetMapping("/getBlogsList")
-    public List<String> getBlogsList() {
-        List<String> result = new ArrayList<>();
-        System.out.println(pathConfig.blogsURL);
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver ();
-        try {
-            Resource[] resources = resolver.getResources(pathConfig.blogsURL);
-            for (Resource resource : resources) {
-                String fileName = resource.getFilename();
-                if (fileName != null) {
-                    result.add(fileName);
-                }
+    public JSONArray getBlogsList() {
+        ArrayList<String> files = new ArrayList<>();
+        ArrayList<File> folder = new ArrayList<>();
+        JSONArray result = new JSONArray();
+        File file = new File(pathConfig.blogs);
+        File[] tempList = file.listFiles();
+
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isDirectory()) {
+                folder.add(tempList[i]);
+                System.out.println("文件夹：" + tempList[i]);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "获取博客失败！",
-                    e
-            );
         }
+        ArrayList<String> folderName = new ArrayList<>();
+        for(File a : folder) {
+            String name = a.getName();
+            Blog blog = new Blog();
+            ArrayList<String> blogName = new ArrayList<>();
+            blog.setCategory(name);
+            File[] blogFiles = a.listFiles();
+            for(File blogFile : blogFiles) {
+                if(blogFile.isFile())
+                    blogName.add(blogFile.getName());
+            }
+            blog.setBlogs(blogName);
+            result.add(blog);
+        }
+        //System.out.println(result);
 
         return result;
     }

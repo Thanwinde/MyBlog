@@ -20,15 +20,10 @@ import java.io.FileNotFoundException;
  **/
 @Configuration
 public class PathConfig {
-    public  String modulesPath;
-    public  String blogs;
-    public  String blogsURL;
+    public String blogs;
+    public String blogsURL;
 
-    public PathConfig(
-            @Value("${htmls.modules}") String modulesPath,
-            @Value("${htmls.blogs}") String blogs){
-        this.modulesPath = "file:" + modulesPath;
-        this.blogs       = "file:" + blogs;
-        this.blogsURL    = this.blogs + "*.html";
+    public PathConfig(@Value("${htmls.blogs}") String blogs){
+        this.blogs = blogs;
     }
 }

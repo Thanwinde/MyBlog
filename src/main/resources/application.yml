@@ -16,7 +16,6 @@ spring:
     username: root
     password: 123456
 htmls:
-  blogs: "E:/IT/MyBlogs/blogs/"
-  modules: "E:/IT/MyBlogs/modules/"
+  blogs: "E:/IT/MyBlogs/blogs"
 
 
