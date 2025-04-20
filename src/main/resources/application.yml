@@ -12,10 +12,13 @@ spring:
     suffix: .html                   # 在构建 URL 时添加到视图名称后的后缀（默认值： .html ）
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/myblog?useSSL=true&serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: 123456
+    url: jdbc:mysql://localhost:11451/myblog?useSSL=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: TWind
+    password: UserPassisnsh250.
 htmls:
-  blogs: "E:/IT/MyBlogs/blogs"
+#  blogs: "E:/IT/MyBlogs/blogs/"
+#  index: "E:/IT/MyBlogs/"
+  blogs: "/root/MyBlogs/blogs/"
+  index: "/root/MyBlogs/"
 
 

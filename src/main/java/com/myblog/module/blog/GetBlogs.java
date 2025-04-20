@@ -33,9 +33,9 @@ public class GetBlogs {
 
     @GetMapping("/getBlogsList")
     public JSONArray getBlogsList() {
-        ArrayList<String> files = new ArrayList<>();
         ArrayList<File> folder = new ArrayList<>();
         JSONArray result = new JSONArray();
+        System.out.println("blogList:" + pathConfig.blogs);
         File file = new File(pathConfig.blogs);
         File[] tempList = file.listFiles();
 

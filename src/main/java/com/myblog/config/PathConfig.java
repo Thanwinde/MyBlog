@@ -21,9 +21,10 @@ import java.io.FileNotFoundException;
 @Configuration
 public class PathConfig {
     public String blogs;
-    public String blogsURL;
+    public String index;
 
-    public PathConfig(@Value("${htmls.blogs}") String blogs){
+    public PathConfig(@Value("${htmls.blogs}") String blogs, @Value("${htmls.index}") String index) {
         this.blogs = blogs;
+        this.index = index;
     }
 }

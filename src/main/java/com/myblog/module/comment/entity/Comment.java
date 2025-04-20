@@ -13,8 +13,8 @@ import java.util.Date;
  * @data 2025/4/18 21:48
  * @description
  **/
-@TableName("comment")
 @Data
+@TableName("comment")
 public class Comment {
     @TableId(value = "id",type = IdType.AUTO)
     Long id;
