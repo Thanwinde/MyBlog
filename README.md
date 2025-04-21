@@ -1,6 +1,6 @@
 # 一个自用的简单博客框架
 ---
-示例：[TWind的博客](http://8.137.77.31/)
+示例：www.twindworld.com
 
 由springWeb搭建后端，o3提供前端
 
