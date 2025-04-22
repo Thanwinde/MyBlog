@@ -15,6 +15,20 @@ spring:
     url: jdbc:mysql://localhost:11451/myblog?useSSL=true&serverTimezone=UTC&characterEncoding=UTF-8
     username: TWind
     password: UserPassisnsh250.
+#    username: root
+#    password: 123456
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 3204789832@qq.com
+    password: nmeplvjhyafldebc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 htmls:
 #  blogs: "E:/IT/MyBlogs/blogs/"
 #  index: "E:/IT/MyBlogs/"

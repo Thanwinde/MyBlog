@@ -25,15 +25,13 @@ public class AddComment extends ServiceImpl<CommentMapper, Comment> {
     @PostMapping("/addComment")
     public void addComment(@RequestBody String strJson) {
         JSONObject json = JSONUtil.parseObj(strJson);
+        String email = json.getStr("email");
         String content = json.getStr("content");
         String username = json.getStr("username");
-        System.out.println(json);
-        System.out.println(strJson);
-        System.out.println(content);
-        System.out.println(username);
         Comment comment = new Comment();
         comment.setContent(content);
         comment.setUsername(username);
+        comment.setEmail(email);
         comment.setTime(new Date());
         save(comment);
     }

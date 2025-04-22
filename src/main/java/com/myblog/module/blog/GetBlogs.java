@@ -35,14 +35,14 @@ public class GetBlogs {
     public JSONArray getBlogsList() {
         ArrayList<File> folder = new ArrayList<>();
         JSONArray result = new JSONArray();
-        System.out.println("blogList:" + pathConfig.blogs);
+        //System.out.println("blogList:" + pathConfig.blogs);
         File file = new File(pathConfig.blogs);
         File[] tempList = file.listFiles();
 
         for (int i = 0; i < tempList.length; i++) {
             if (tempList[i].isDirectory()) {
                 folder.add(tempList[i]);
-                System.out.println("文件夹：" + tempList[i]);
+                //System.out.println("文件夹：" + tempList[i]);
             }
         }
         ArrayList<String> folderName = new ArrayList<>();
