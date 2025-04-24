@@ -34,6 +34,8 @@ getBlogs会返回一个json，里面包括了分类，该分类的博客name，�
 
 gift文件夹里面有实例文件（以及index.html等，按需取用）
 
+要设置网站图标的话修改favicon.ico即可
+
 然后在yml中改成**blogs的路径以及index.html的上一级的路径**
 
 程序会递归扫描其中每一个文件夹作为分类名，并将其中的html文件截取文件名封装返回前端
