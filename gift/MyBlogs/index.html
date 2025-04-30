@@ -143,7 +143,7 @@
             const d=document.createElement('div');
             d.className='blog-item';
             d.innerHTML=`
-            <a class="title" href="blog/${escapeHtml(b.category)}/${escapeHtml(b.filename)}">${escapeHtml(b.title)}</a>
+            <a class="title" href="blog/${escapeHtml(b.category)}/${escapeHtml(b.title)}">${escapeHtml(b.title)}</a>
             <span class="badge">${escapeHtml(b.category)}</span>`;
             box.appendChild(d);
         });
@@ -174,17 +174,7 @@
                     });
                 });
             }
-            /* 混合对象 [{filename,title,category}] */
-            else if(Array.isArray(list)&&list[0]&&list[0].filename){
-                blogData=list.map(it=>({
-                    filename:it.filename,title:it.title||it.filename.replace(/\.[^.]+$/,''),
-                    category:it.category||'未分类'
-                }));
-            }
-            /* 旧接口 ["a.md","b.md"] */
-            else if(Array.isArray(list)){
-                blogData=list.map(it=>({filename:it,title:it.replace(/\.[^.]+$/,''),category:'未分类'}));
-            }
+
 
             populateCategories();renderBlogList();
         }catch(e){

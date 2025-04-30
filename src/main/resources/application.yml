@@ -30,9 +30,9 @@ spring:
             enable: true
             required: true
 htmls:
-#  blogs: "E:/IT/MyBlogs/blogs/"
-#  index: "E:/IT/MyBlogs/"
-  blogs: "/root/MyBlogs/blogs/"
-  index: "/root/MyBlogs/"
+  blogs: "E:/IT/MyBlogs/blogs/"
+  index: "E:/IT/MyBlogs/"
+#  blogs: "/root/MyBlogs/blogs/"
+#  index: "/root/MyBlogs/"
 
 

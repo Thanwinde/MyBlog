@@ -11,11 +11,15 @@ public class WebConfig implements WebMvcConfigurer {
 
     final PathConfig pathConfig;
 
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-          .addResourceHandler("/blog/**")
+          .addResourceHandler("/blog/*/assets/**")
           .addResourceLocations("file:" + pathConfig.blogs);
+        registry
+                .addResourceHandler("/blog/*/*.css")
+                .addResourceLocations("file:" + pathConfig.blogs);
         registry
                 .addResourceHandler("/**")
                 .addResourceLocations("file:" + pathConfig.index);
