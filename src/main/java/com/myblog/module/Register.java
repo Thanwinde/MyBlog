@@ -1,6 +1,7 @@
 package com.myblog.module;
 
 import cn.hutool.jwt.JWT;
+import com.myblog.module.utils.MailUtil;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

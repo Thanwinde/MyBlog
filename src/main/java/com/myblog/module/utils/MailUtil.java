@@ -1,4 +1,4 @@
-package com.myblog.module;
+package com.myblog.module.utils;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
