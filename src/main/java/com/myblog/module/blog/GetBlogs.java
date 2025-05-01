@@ -16,7 +16,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -45,17 +49,37 @@ public class GetBlogs {
                 //System.out.println("文件夹：" + tempList[i]);
             }
         }
-        ArrayList<String> folderName = new ArrayList<>();
+
         for(File a : folder) {
             String name = a.getName();
             Blog blog = new Blog();
             ArrayList<String> blogName = new ArrayList<>();
             blog.setCategory(name);
-            File[] blogFiles = a.listFiles();
+            File[] files  = a.listFiles();
+
+            List<File> blogFiles = new ArrayList<>();
+            if (files != null) {
+                Collections.addAll(blogFiles, files);
+            }
+            blogFiles.sort(
+
+                    Comparator.comparingLong((File f) -> {
+                        try {
+                            BasicFileAttributes attrs =
+                                    Files.readAttributes(f.toPath(), BasicFileAttributes.class);
+                            return attrs.creationTime().toMillis();
+                        } catch (IOException e) {
+
+                            return f.lastModified();
+                        }
+                    }).reversed()
+            );
+
             for(File blogFile : blogFiles) {
                 if(blogFile.isFile())
                     blogName.add(blogFile.getName());
             }
+
             blog.setBlogs(blogName);
             result.add(blog);
         }

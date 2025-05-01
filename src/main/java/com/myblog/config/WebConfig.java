@@ -15,13 +15,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-          .addResourceHandler("/blog/*/assets/**")
-          .addResourceLocations("file:" + pathConfig.blogs);
-        registry
-                .addResourceHandler("/blog/*/*.css")
+                .addResourceHandler("/blog/*/assets/**")
                 .addResourceLocations("file:" + pathConfig.blogs);
         registry
-                .addResourceHandler("/**")
+                .addResourceHandler("/blog/*/htmls/*.html")
+                .addResourceLocations("file:" + pathConfig.blogs);
+        registry
+                .addResourceHandler("/*.html")
                 .addResourceLocations("file:" + pathConfig.index);
     }
 }
