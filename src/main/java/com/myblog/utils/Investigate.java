@@ -1,4 +1,4 @@
-package com.myblog;
+package com.myblog.utils;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -10,9 +10,9 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -20,9 +20,13 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootTest
-class MyBlogApplicationTests {
-
+/**
+ * @author nsh
+ * @data 2025/5/1 19:15
+ * @description
+ **/
+@Component
+public class Investigate {
     @Value("${investigate.ack}")
     String access;
     @Value("${investigate.strategyId}")
@@ -30,28 +34,28 @@ class MyBlogApplicationTests {
 
     CloseableHttpClient httpclient = HttpClients.createDefault();
 
-    @Test
-    public void isLegal() throws UnsupportedEncodingException, URISyntaxException {
+    public boolean isLegal(String text) throws IOException, URISyntaxException {
+        URI uri = null;
+            uri = new URIBuilder("https://aip.baidubce.com/rest/2.0/solution/v1/text_censor/v2/user_defined")
+                    .addParameter("access_token",access).build();
 
-        String text = "操死你";
-        URI uri = new URIBuilder("https://aip.baidubce.com/rest/2.0/solution/v1/text_censor/v2/user_defined")
-                .addParameter("access_token",access).build();
         HttpPost httppost = new HttpPost(uri);
         httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
         List<NameValuePair> paramPairs = new ArrayList<>();
         paramPairs.add(new BasicNameValuePair("text", text));
         paramPairs.add(new BasicNameValuePair("strategyId", String.valueOf(strategyId)));
-        httppost.setEntity(new UrlEncodedFormEntity(paramPairs,"UTF-8"));
-        try {
+
+            httppost.setEntity(new UrlEncodedFormEntity(paramPairs,"UTF-8"));
+
+
             CloseableHttpResponse response = httpclient.execute(httppost);
             JSONObject jsonObject = JSONUtil.parseObj(response.getEntity().getContent());
-            httpclient.close();
-            response.close();
+            response.getEntity().getContent().close();
             int type = jsonObject.getInt("conclusionType");
-            System.out.println(type);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            if(type == 3 || type == 2)
+                return false;
+            return true;
+
     }
 
 
